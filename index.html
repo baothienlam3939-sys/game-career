@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="游戏用户运营作品集 - 涵盖私域全链路操盘、深度用户画像分析与玩家流失留存模型">
+  <title>游戏用户运营作品集 | Portfolio</title>
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+      --accent-badge: #e0e7ff;
+      --accent-text: #3730a3;
+      --metric-bg: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+    }
+
+    /* 头部前言区 */
+    .header-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
+      border: 1px solid var(--border-color);
+    }
+
+    .role-badge {
+      display: inline-block;
+      background: var(--accent-badge);
+      color: var(--accent-text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .main-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .intro-text {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .intro-list {
+      list-style-type: none;
+      margin-bottom: 16px;
+    }
+
+    .intro-list li {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .intro-list li::before {
+      content: "•";
+      color: var(--primary-color);
+      font-weight: bold;
+      font-size: 1.3rem;
+      position: absolute;
+      left: 0;
+      top: -3px;
+    }
+
+    .note-text {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    /* 作品卡片区 */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .tag-practical { background-color: #dcfce7; color: #166534; }
+    .tag-analysis { background-color: #e0f2fe; color: #075985; }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .card-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    /* 核心指标亮点勋章 */
+    .metric-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .metric-pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      background-color: var(--metric-bg);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 按钮组 */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
+
+    .btn:hover { background-color: var(--primary-hover); }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+    }
+
+    .btn-resume {
+      background-color: #0f172a;
+    }
+
+    .btn-resume:hover {
+      background-color: #1e293b;
+    }
+
+    /* 页脚 */
+    .footer {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .contact-info {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .contact-info a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* PDF 预览弹窗 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 1000px;
+      height: 90vh;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      padding: 12px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    .modal-body {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #525659;
+      position: relative;
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    @media (min-width: 640px) {
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+      }
+      .contact-info { margin-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- 头部：总前言区 -->
+    <header class="header-card">
+      <span class="role-badge">求职意向：游戏用户运营 / 玩家运营 / 初级游戏数据分析</span>
+      <h1 class="main-title">游戏用户运营作品集</h1>
+      
+      <p class="intro-text">
+        您好！我是 <strong>黄绮莉</strong>。本作品集包含三份深度项目报告，涵盖私域冷启动全链路操盘、竞品用户画像建模与玩家流失挽回，展现数据驱动与用户共创协同能力：
+      </p>
+
+      <ul class="intro-list">
+        <li><strong>《世家风华录》社群运营复盘：</strong>从 0 到 1 私域全链路操盘，覆盖小红书引流、社群分层、共创促活、舆情维护及 SOP 沉淀。</li>
+        <li><strong>《逆水寒手游》用户画像与分层研究：</strong>基于公开数据拆解用户生态，洞察“战力→衣品”社交货币迁移，构建 5 层精细化标签体系。</li>
+        <li><strong>《逆水寒手游》玩家流失与留存分析：</strong>量化拆解六大退坑成因，运用加权矩阵评估解决优先级，并构建五步召回 SOP 与 Python 风险预警模型。</li>
+      </ul>
+
+      <p class="note-text">
+        注：竞品分析均为基于公开数据与社区调研的桌面分析，相关推演仅用于构建运营假设。
+      </p>
+    </header>
+
+    <!-- 作品目录 -->
+    <section>
+      <h2 class="section-title">📂 作品目录</h2>
+      
+      <div class="cards-container">
+        
+        <!-- 卡片 1 -->
+        <article class="card">
+          <div class="card-header">
+            <span class="card-tag tag-practical">实战项目</span>
+          </div>
+          <h3 class="card-title">《世家风华录》社群运营复盘报告</h3>
+          <p class="card-desc">独立完成古风模拟游戏私域全链路操盘，覆盖小红书内容引流、分级答疑机制、剧情/玩法许愿池促活与可复用的标准化 SOP 沉淀。</p>
+          
+          <div class="metric-group">
+            <span class="metric-pill">📈 1.5万+ 私域账号人次</span>
+            <span class="metric-pill">❤️ 95% 玩家满意度</span>
+            <span class="metric-pill">🔥 28% 周发言互动率</span>
+            <span class="metric-pill">👑 1,000+ 付费 VIP 筛选</span>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn" onclick="openPreview('世家风华录_社群运营复盘报告.pdf', '《世家风华录》社群运营复盘报告')">👁️ 在线预览</button>
+            <a href="世家风华录_社群运营复盘报告.pdf" target="_blank" class="btn btn-outline">↗ 新标签页打开</a>
+          </div>
+        </article>
+
+        <!-- 卡片 2 -->
+        <article class="card">
+          <div class="card-header">
+            <span class="card-tag tag-analysis">竞品分析</span>
+          </div>
+          <h3 class="card-title">《逆水寒手游》用户画像与分层研究报告</h3>
+          <p class="card-desc">深度拆解以年轻女性及 00 后为主的用户生态，分析“战力→衣品”社交货币迁移逻辑，并搭建包含 6 大维度的精细化用户分层与标签体系。</p>
+          
+          <div class="metric-group">
+            <span class="metric-pill">👩 71% 女性用户浓度</span>
+            <span class="metric-pill">🏷️ 6维 用户标签体系</span>
+            <span class="metric-pill">📊 5层 用户生命周期分层</span>
+            <span class="metric-pill">👗 1亿+ 6元皮肤销量拆解</span>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn" onclick="openPreview('逆水寒手游_用户画像与分层研究报告.pdf', '《逆水寒手游》用户画像与分层研究报告')">👁️ 在线预览</button>
+            <a href="逆水寒手游_用户画像与分层研究报告.pdf" target="_blank" class="btn btn-outline">↗ 新标签页打开</a>
+          </div>
+        </article>
+
+        <!-- 卡片 3 -->
+        <article class="card">
+          <div class="card-header">
+            <span class="card-tag tag-analysis">竞品分析</span>
+          </div>
+          <h3 class="card-title">《逆水寒手游》玩家流失与留存分析报告</h3>
+          <p class="card-desc">量化归因六大退坑成因，通过四维加权矩阵确定解决优先级，制定五步分层召回 SOP，并搭建基于 Python 的流失风险分概念预警模型。</p>
+          
+          <div class="metric-group">
+            <span class="metric-pill">⚠️ 6大 退坑归因分类</span>
+            <span class="metric-pill">⚖️ 四维加权优先级评估</span>
+            <span class="metric-pill">🔄 五步分层召回 SOP</span>
+            <span class="metric-pill">🐍 Python 风险打分模型</span>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn" onclick="openPreview('逆水寒手游_玩家流失与留存分析报告.pdf', '《逆水寒手游》玩家流失与留存分析报告')">👁️ 在线预览</button>
+            <a href="逆水寒手游_玩家流失与留存分析报告.pdf" target="_blank" class="btn btn-outline">↗ 新标签页打开</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 页脚：联系方式与简历 -->
+    <footer class="footer">
+      <div class="contact-info">
+        <div style="font-weight: 700; margin-bottom: 4px;">📬 联系方式</div>
+        <p><strong>邮箱：</strong><a href="mailto:your_email@example.com">842899517@qq.com</a> | <strong>联系方式：</strong>15521234454</p>
+      </div>
+      <div>
+        <button class="btn btn-resume" onclick="openPreview('个人简历.pdf', '个人简历')">📄 预览个人简历</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- 全屏 PDF 预览弹窗结构 -->
+  <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-container">
+      <div class="modal-header">
+        <span id="modalTitle" class="modal-title">报告预览</span>
+        <div class="modal-actions">
+          <a id="modalExternalLink" href="#" target="_blank" class="btn btn-outline" style="padding: 4px 10px; font-size: 0.78rem;">新窗口打开</a>
+          <button class="modal-close" onclick="closePreview()" aria-label="关闭预览">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <iframe id="pdfFrame" src="" title="PDF预览界面"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 预览控制脚本 -->
+  <script>
+    function openPreview(pdfUrl, title) {
+      const modal = document.getElementById('modalOverlay');
+      const iframe = document.getElementById('pdfFrame');
+      const titleElement = document.getElementById('modalTitle');
+      const externalLink = document.getElementById('modalExternalLink');
+
+      titleElement.textContent = title;
+      externalLink.href = pdfUrl;
+      iframe.src = pdfUrl;
+      modal.style.display = 'flex';
+
+      // 禁止背景滚动
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePreview() {
+      const modal = document.getElementById('modalOverlay');
+      const iframe = document.getElementById('pdfFrame');
+
+      modal.style.display = 'none';
+      iframe.src = ''; // 清空 iframe 释放内存恢复性能
+
+      // 恢复背景滚动
+      document.body.style.overflow = 'auto';
+    }
+
+    // 点击背景遮罩关闭
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePreview();
+      }
+    });
+
+    // 键盘 ESC 键快捷关闭
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePreview();
+      }
+    });
+  </script>
+
+</body>
+</html>
