@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="游戏用户运营作品集 - 涵盖私域全链路操盘、深度用户画像分析与玩家流失留存模型">
   <title>游戏用户运营作品集 | Portfolio</title>
+  
+  <!-- 引入 PDF.js 核心库与 Worker 支持 mobile 渲染 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+
   <style>
     :root {
       --primary-color: #4f46e5;
@@ -256,19 +263,19 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(4px);
       z-index: 1000;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
     }
 
     .modal-container {
       background: #ffffff;
       width: 100%;
       max-width: 1000px;
-      height: 90vh;
+      height: 92vh;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
@@ -277,7 +284,7 @@
     }
 
     .modal-header {
-      padding: 12px 20px;
+      padding: 12px 16px;
       background: #f8fafc;
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -286,7 +293,7 @@
     }
 
     .modal-title {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-main);
       white-space: nowrap;
@@ -297,7 +304,7 @@
     .modal-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .modal-close {
@@ -310,18 +317,30 @@
       line-height: 1;
     }
 
+    /* PDF Canvas 渲染容器 */
     .modal-body {
       flex: 1;
       width: 100%;
       height: 100%;
-      background: #525659;
-      position: relative;
+      background: #323639;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 0;
+      text-align: center;
     }
 
-    .modal-body iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .pdf-canvas {
+      margin: 0 auto 12px auto;
+      display: block;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      max-width: 98%;
+      height: auto !important;
+    }
+
+    .pdf-loading {
+      color: #ffffff;
+      font-size: 0.95rem;
+      padding: 40px 16px;
     }
 
     @media (min-width: 640px) {
@@ -454,37 +473,74 @@
           <button class="modal-close" onclick="closePreview()" aria-label="关闭预览">&times;</button>
         </div>
       </div>
-      <div class="modal-body">
-        <iframe id="pdfFrame" src="" title="PDF预览界面"></iframe>
+      <div id="pdfContainer" class="modal-body">
+        <!-- PDF 页面将由 PDF.js 自动生成 Canvas 插入此处 -->
       </div>
     </div>
   </div>
 
-  <!-- 预览控制脚本 -->
+  <!-- 预览控制与 PDF.js 渲染脚本 -->
   <script>
-    function openPreview(pdfUrl, title) {
+    let currentRenderTask = null;
+
+    async function openPreview(pdfUrl, title) {
       const modal = document.getElementById('modalOverlay');
-      const iframe = document.getElementById('pdfFrame');
+      const container = document.getElementById('pdfContainer');
       const titleElement = document.getElementById('modalTitle');
       const externalLink = document.getElementById('modalExternalLink');
 
       titleElement.textContent = title;
       externalLink.href = pdfUrl;
-      iframe.src = pdfUrl;
+      container.innerHTML = '<div class="pdf-loading">⏳ 报告加载中，请稍候...</div>';
       modal.style.display = 'flex';
-
-      // 禁止背景滚动
       document.body.style.overflow = 'hidden';
+
+      try {
+        // 使用 PDF.js 读取 PDF 文件
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        container.innerHTML = '';
+
+        // 计算适应手机屏幕宽度的缩放比例
+        const containerWidth = container.clientWidth || window.innerWidth;
+
+        // 逐页渲染 PDF 到 Canvas
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const unscaledViewport = page.getViewport({ scale: 1.0 });
+          
+          // 根据设备屏幕自动匹配 DPR 和宽度，保持高清晰度
+          const targetWidth = Math.min(containerWidth * 0.95, 900);
+          const scale = targetWidth / unscaledViewport.width;
+          const viewport = page.getViewport({ scale: scale });
+
+          const canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          container.appendChild(canvas);
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          
+          await page.render(renderContext).promise;
+        }
+      } catch (error) {
+        console.error('PDF 渲染失败:', error);
+        container.innerHTML = '<div class="pdf-loading">⚠️ PDF 预览失败，请点击右上角“新窗口打开”直接查看。</div>';
+      }
     }
 
     function closePreview() {
       const modal = document.getElementById('modalOverlay');
-      const iframe = document.getElementById('pdfFrame');
+      const container = document.getElementById('pdfContainer');
 
       modal.style.display = 'none';
-      iframe.src = ''; // 清空 iframe 释放内存恢复性能
-
-      // 恢复背景滚动
+      container.innerHTML = ''; // 清除 Canvas 释放手机内存
       document.body.style.overflow = 'auto';
     }
 
