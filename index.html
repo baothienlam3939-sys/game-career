@@ -484,56 +484,83 @@
     let currentRenderTask = null;
 
     async function openPreview(pdfUrl, title) {
-      const modal = document.getElementById('modalOverlay');
-      const container = document.getElementById('pdfContainer');
-      const titleElement = document.getElementById('modalTitle');
-      const externalLink = document.getElementById('modalExternalLink');
+  const modal = document.getElementById('modalOverlay');
+  const container = document.getElementById('pdfContainer');
+  const titleElement = document.getElementById('modalTitle');
+  const externalLink = document.getElementById('modalExternalLink');
 
-      titleElement.textContent = title;
-      externalLink.href = pdfUrl;
-      container.innerHTML = '<div class="pdf-loading">⏳ 报告加载中，请稍候...</div>';
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+  const encodedUrl = encodeURI(pdfUrl);
 
-      try {
-        // 使用 PDF.js 读取 PDF 文件
-        const loadingTask = pdfjsLib.getDocument(pdfUrl);
-        const pdf = await loadingTask.promise;
-        container.innerHTML = '';
+  titleElement.textContent = title;
+  externalLink.href = encodedUrl;
+  
+  container.innerHTML = `
+    <div class="pdf-loading">
+      ⏳ 高清报告加载中，请稍候...<br><br>
+      <span style="font-size: 0.82rem; color: #94a3b8;">
+        若长时间无响应，可尝试 <a href="${encodedUrl}" target="_blank">点击此处直接下载/打开 PDF</a>
+      </span>
+    </div>`;
+  
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 
-        // 计算适应手机屏幕宽度的缩放比例
-        const containerWidth = container.clientWidth || window.innerWidth;
-
-        // 逐页渲染 PDF 到 Canvas
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-          const page = await pdf.getPage(pageNum);
-          const unscaledViewport = page.getViewport({ scale: 1.0 });
-          
-          // 根据设备屏幕自动匹配 DPR 和宽度，保持高清晰度
-          const targetWidth = Math.min(containerWidth * 0.95, 900);
-          const scale = targetWidth / unscaledViewport.width;
-          const viewport = page.getViewport({ scale: scale });
-
-          const canvas = document.createElement('canvas');
-          canvas.className = 'pdf-canvas';
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          container.appendChild(canvas);
-
-          const renderContext = {
-            canvasContext: context,
-            viewport: viewport
-          };
-          
-          await page.render(renderContext).promise;
-        }
-      } catch (error) {
-        console.error('PDF 渲染失败:', error);
-        container.innerHTML = '<div class="pdf-loading">⚠️ PDF 预览失败，请点击右上角“新窗口打开”直接查看。</div>';
-      }
+  try {
+    if (typeof pdfjsLib === 'undefined') {
+      throw new Error('PDF.js 库未能成功加载');
     }
+
+    const loadingTask = pdfjsLib.getDocument(encodedUrl);
+    const pdf = await loadingTask.promise;
+    container.innerHTML = '';
+
+    const containerWidth = container.clientWidth || window.innerWidth;
+    
+    // 获取设备的物理像素比（手机端通常为 2 或 3）
+    const dpr = window.devicePixelRatio || 1;
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      
+      // 计算 CSS 显示目标宽度
+      const targetWidth = Math.min(containerWidth * 0.95, 900);
+      const cssScale = targetWidth / unscaledViewport.width;
+      
+      // 关键优化：根据 DPR 放大渲染比例，生成高分辨率位图
+      const renderScale = cssScale * dpr;
+      const viewport = page.getViewport({ scale: renderScale });
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'pdf-canvas';
+      const context = canvas.getContext('2d');
+
+      // 设置 Canvas 画布的实际像素点（高清）
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+
+      // 设置 Canvas 在页面上的实际显示尺寸（缩放到正常屏幕大小）
+      canvas.style.width = Math.floor(viewport.width / dpr) + 'px';
+      canvas.style.height = Math.floor(viewport.height / dpr) + 'px';
+
+      container.appendChild(canvas);
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      
+      await page.render(renderContext).promise;
+    }
+  } catch (error) {
+    console.error('PDF 渲染失败:', error);
+    container.innerHTML = `
+      <div class="pdf-loading">
+        ⚠️ 手机在线预览受限或网络较慢<br><br>
+        <a href="${encodedUrl}" target="_blank" class="btn" style="background-color: var(--primary-color);">点击此处在新标签页打开 PDF 文件</a>
+      </div>`;
+  }
+}
 
     function closePreview() {
       const modal = document.getElementById('modalOverlay');
